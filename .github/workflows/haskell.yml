@@ -12,7 +12,7 @@ jobs:
           - windows-latest
         ghc:
           - '8.10'
-          - '9.2'
+            # - '9.2'
 
     name: ${{ matrix.os }} GHC ${{ matrix.ghc }}
     runs-on: ${{ matrix.os }}
