@@ -41,3 +41,13 @@ jobs:
 
       - name: Test
         run: cabal test
+
+      - name: Set binary path
+        run: echo "BINARY_PATH=$(cabal list-bin github-actions-haskell-tests)" >> $GITHUB_ENV
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact-${{ runner.os }}
+          path: ${{ env.BINARY_PATH }}
+          if-no-files-found: error
