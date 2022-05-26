@@ -1,0 +1,43 @@
+name: Haskell CI
+
+on: push
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macOS-latest
+          - windows-latest
+        ghc:
+          - '8.10'
+          - '9.2'
+
+    name: ${{ matrix.os }} GHC ${{ matrix.ghc }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Haskell
+        id: setup-haskell
+        uses: haskell/actions/setup@v2
+        with:
+          ghc-version: ${{ matrix.ghc }}
+
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.setup-haskell.outputs.cabal-store }}
+          key: ${{ runner.os }}-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-
+
+      - name: Build dependencies
+        run: cabal build --only-dependencies
+
+      - name: Build
+        run: cabal build
+
+      - name: Test
+        run: cabal test
